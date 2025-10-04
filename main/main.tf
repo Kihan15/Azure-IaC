@@ -15,7 +15,7 @@ resource "random_integer" "name_suffix" {
 }
 
 ##################################################################################
-# APP SERVICE
+# APP SERVICES
 ##################################################################################
 
 resource "azurerm_resource_group" "app_service" {
