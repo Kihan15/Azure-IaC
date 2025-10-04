@@ -29,7 +29,7 @@ jobs:
         terraform_version: 1.1.0
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init -upgrade
+    - name: Terraform Init
       id: init
       env:
         ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -39,7 +39,7 @@ jobs:
         RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
         STORAGE_ACCOUNT: ${{ secrets.STORAGE_ACCOUNT }}
         CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
-      run: terraform init
+      run: terraform init -upgrade
 
     # Run a terraform plan for pull requests only
     - name: Terraform Plan
