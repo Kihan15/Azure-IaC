@@ -14,5 +14,5 @@ variable "naming_prefix" {
 
 variable "github_repository" {
   type    = string
-  default = "ado-labs-github-actions"
+  default = "Azure-IaC"
 }
