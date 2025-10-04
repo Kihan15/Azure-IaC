@@ -1,31 +1,31 @@
-#############################################################################
-# VARIABLES
-#############################################################################
+variable "target_subscription_id" {
+  description = "The Azure Subscription ID for resource deployment."
+  type        = string
+}
+
+variable "resource_group_name" {
+  description = "Name of the resource group."
+  type        = string
+  default     = "rg-prod-app"
+}
 
 variable "location" {
-  type    = string
-  default = "eastus"
+  description = "Azure region for resource deployment."
+  type        = string
+  default     = "East US"
 }
 
-variable "naming_prefix" {
-  type    = string
-  default = "adolabs"
+variable "storage_account_name" {
+  description = "Globally unique name for the storage account (lowercase)."
+  type        = string
+  default     = "tfmgstorageacnt"
 }
 
-variable "asp_tier" {
-    type = string
-    description = "Tier for App Service Plan (Standard, PremiumV2)"
-    default = "Free"
-}
-
-variable "asp_size" {
-    type = string
-    description = "Size for App Service Plan (S2, P1v2)"
-    default = "S1"
-}
-
-variable "capacity" {
-  type = string
-  description = "Number of instances for App Service Plan"
-  default = "1"
+variable "tags" {
+  description = "Tags to assign to resources."
+  type        = map(string)
+  default     = {
+    environment = "Production"
+    project     = "OIDC-Demo"
+  }
 }
