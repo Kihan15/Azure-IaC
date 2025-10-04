@@ -14,5 +14,5 @@ variable "naming_prefix" {
 
 variable "github_repository" {
   type    = string
-  default = "Kihan15/Azure-IaC"
+  default = "Azure-IaC"
 }
