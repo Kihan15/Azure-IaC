@@ -7,3 +7,4 @@ tags = {
   project     = "IaC-Demo"
   Costcenter  = "Damien123"
 }
+management_group_id = "eb5715ba-6d0b-4bdf-a955-4221b99f83ba"
