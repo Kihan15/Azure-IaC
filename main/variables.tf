@@ -29,22 +29,3 @@ variable "tags" {
     project     = "OIDC-Demo"
   }
 }
-
-
-# Data source to get the management group ID for Policy
-
-variable "management_group_id" {
-  description = "The ID of the Management Group where the policy will be assigned (e.g., 'Contoso-MG')."
-  type        = string
-}
-
-variable "tag_name" {
-  description = "The name of the tag to audit for."
-  type        = string
-  default     = "Environment"
-}
-
-variable "target_management_group_name" {
-  description = "The Name of the Management Group where the policy will be assigned."
-  type        = string
-}

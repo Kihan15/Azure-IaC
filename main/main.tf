@@ -1,5 +1,5 @@
 ###############################################################################
-# 1. TERRAFORM BLOCK & AZURE PROVIDER CONFIGURATION
+# 1  TERRAFORM BLOCK & AZURE PROVIDER CONFIGURATION
 ###############################################################################
 terraform {
   required_version = ">= 1.5.7"
@@ -66,59 +66,3 @@ output "resource_group_name" {
   value       = azurerm_resource_group.main.name
 }
 
-
-# Policy to require 'Cost Center' tag on resources ( Policy Definition )
-
-resource "azurerm_policy_definition" "cost_center_tag_required" {
-  name                = "required-cost-center-tag"
-  policy_type         = "Custom"
-  mode                = "Indexed"
-  display_name        = "Require 'Cost Center' tag on resources"
-  description         = "This policy requires the 'Cost Center' tag to be present on all resources with a non-empty value."
-
-  # The rule is the core logic from the JSON, provided as a HCL string.
-  policy_rule = jsonencode({
-    if = {
-      allOf = [
-        {
-          field = "type"
-          notIn = [
-            "Microsoft.Support/supportTickets",
-            "Microsoft.Resources/subscriptions/resourceGroups"
-          ]
-        },
-        {
-          field = "[concat('tags[', parameters('tagName'), ']')]"
-          exists = "false"
-        }
-      ]
-    }
-    then = {
-      effect = "Deny"
-    }
-  })
-
-  # Parameters (Used in the policy_rule above)
-  parameters = jsonencode({
-    tagName = {
-      type = "String"
-      metadata = {
-        displayName = "Tag Name"
-        description = "Name of the tag to require"
-      }
-      defaultValue = "Cost Center"
-    }
-  })
-}
-
-# Policy Assignment to the Subscription
-
-# Define the subscription scope using a variable (best practice)
-
-resource "azurerm_policy_assignment" "cost_center_assignment_sub" {
-  name                 = "deny-missing-costcenter-tag"
-  scope                = "/subscriptions/${var.target_subscription_id}"
-  policy_definition_id = azurerm_policy_definition.cost_center_tag_required.id
-  display_name         = "Require 'Cost Center' Tag (Subscription)"
-  description          = "Applies the custom policy to enforce the presence of the 'Cost Center' tag."
-}
