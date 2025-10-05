@@ -6,5 +6,5 @@ tags = {
   environment = "Production"
   project     = "IaC-Demo"
   Costcenter  = "Damien123"
-  ITDamien123 = Hellotag
+  ITDamien123 = "Hellotag"
 }
