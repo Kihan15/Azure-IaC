@@ -28,6 +28,13 @@ jobs:
       with:
         terraform_version: 1.5.7
 
+    # Check the format of the Terraform configuration files
+    -name: Clean up Terraform cache
+     id: cleanup
+      run: ¦
+      rm -rf .terraform
+      rm -rf .terraform.lock.hcl
+      
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
