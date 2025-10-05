@@ -13,7 +13,7 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
-# Policy Definition
+# Policy Definition denying resources without a specific tag "ITDamien123"
 resource "azurerm_policy_definition" "deny_missing_tag" {
   name         = "deny-missing-${var.tag_name}-tag"
   policy_type  = "Custom"
@@ -36,6 +36,61 @@ resource "azurerm_policy_definition" "deny_missing_tag" {
     }
   })
 }
+
+
+# Policy Definition - Audit environment tag values
+resource "azurerm_policy_definition" "audit_environment_tag" {
+  name         = "audit-environment-tag-values"
+  policy_type  = "Custom"
+  mode         = "Indexed"
+  display_name = "Audit environment tag values"
+  description  = "This policy audits resources where the environment tag value is not prod, stg, or dev"
+
+  metadata = jsonencode({
+    category = "Tags"
+    version  = "1.0.0"
+  })
+
+  policy_rule = jsonencode({
+    if = {
+      anyOf = [
+        {
+          field  = "tags['environment']"
+          exists = "false"
+        },
+        {
+          field    = "tags['environment']"
+          notIn    = ["prod", "stg", "dev"]
+        }
+      ]
+    }
+    then = {
+      effect = "audit"
+    }
+  })
+}
+
+
+
+# Policy Assignment at Subscription Level - Audit environment tag
+resource "azurerm_subscription_policy_assignment" "audit_environment_tag" {
+  name                 = "audit-environment-tag-assignment"
+  subscription_id      = "/subscriptions/${var.subscription_id}"
+  policy_definition_id = azurerm_policy_definition.audit_environment_tag.id
+  display_name         = "Audit environment tag values"
+  description          = "Audits resources with invalid environment tag values (must be prod, stg, or dev)"
+  enforce              = true
+
+  metadata = jsonencode({
+    assignedBy = "Terraform"
+  })
+
+  non_compliance_message {
+    content = "The 'environment' tag must have one of the following values: prod, stg, dev. Current value is invalid or missing."
+  }
+}
+
+
 
 # Policy Assignment at Subscription Level
 resource "azurerm_subscription_policy_assignment" "deny_missing_tag" {
