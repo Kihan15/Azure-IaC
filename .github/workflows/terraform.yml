@@ -40,7 +40,7 @@ jobs:
         RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
         STORAGE_ACCOUNT: ${{ secrets.STORAGE_ACCOUNT }}
         CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
-      run: terraform init -upgrade
+      run: terraform init
 
     # Run a terraform plan for pull requests only
     - name: Terraform Plan
