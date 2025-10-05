@@ -157,10 +157,6 @@ resource "azurerm_policy_definition" "cost_center_tag_required" {
 # Policy Assignment to the Subscription
 
 # Define the subscription scope using a variable (best practice)
-variable "target_subscription_id" {
-  description = "The ID of the subscription to assign the policy to."
-  type        = string
-}
 
 resource "azurerm_policy_assignment" "cost_center_assignment_sub" {
   name                 = "deny-missing-costcenter-tag"
