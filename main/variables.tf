@@ -44,12 +44,6 @@ variable "tag_name" {
   default     = "Environment"
 }
 
-
-variable "target_subscription_id" {
-  description = "The ID of the subscription where the policy will be assigned."
-  type        = string
-}
-
 variable "target_management_group_name" {
   description = "The Name of the Management Group where the policy will be assigned."
   type        = string
