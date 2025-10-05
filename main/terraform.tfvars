@@ -9,3 +9,9 @@ tags = {
 }
 management_group_id = "eb5715ba-6d0b-4bdf-a955-4221b99f83ba"
 tag_name            = "CostCenter" # <--- Override the default here
+
+# If assigning to a subscription
+# target_subscription_id = "d2c5b5b1-d8df-4dbd-ac14-d347e7ab31b0"
+
+# OR if assigning to a management group
+target_management_group_name = "Finance-MG"
