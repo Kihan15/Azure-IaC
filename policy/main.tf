@@ -17,6 +17,7 @@ provider "azurerm" {
 # Policy Definition audit tag for SGR mode:all
 
 
+
 resource "azurerm_policy_definition" "audit_mandatory_tags" {
   name         = "audit-mandatory-tags"
   policy_type  = "Custom"
@@ -35,6 +36,7 @@ resource "azurerm_policy_definition" "audit_mandatory_tags" {
     ]
   })
 
+
   parameters = jsonencode({
     effect = {
       type = "String"
@@ -45,15 +47,9 @@ resource "azurerm_policy_definition" "audit_mandatory_tags" {
       allowedValues = ["Audit", "Deny", "Disabled"]
       defaultValue  = "Audit"
     }
-    mandatoryTags = {
-      type = "Array"
-      metadata = {
-        displayName = "Array of mandatory tags"
-        description = "Tags that must be present on the resource"
-      }
-      defaultValue = var.mandatory_tags
-    }
   })
+
+
 
   policy_rule = jsonencode({
     if = {
@@ -74,19 +70,44 @@ resource "azurerm_policy_definition" "audit_mandatory_tags" {
         },
         {
           anyOf = [
+            # Missing mandatory tags
             {
-              not = {
-                count = {
-                  value = "[parameters('mandatoryTags')]"
-                  name  = "tagcount"
-                  where = {
-                    field       = "tags"
-                    containsKey = "[current('tagcount')]"
-                  }
-                }
-                equals = "[length(parameters('mandatoryTags'))]"
-              }
+              field  = "tags['costcenter']"
+              exists = false
             },
+            {
+              field  = "tags['Project']"
+              exists = false
+            },
+            {
+              field  = "tags['BusinessRequest']"
+              exists = false
+            },
+            {
+              field  = "tags['BusinessOwner']"
+              exists = false
+            },
+            {
+              field  = "tags['Environment']"
+              exists = false
+            },
+            {
+              field  = "tags['CompamyCode']"
+              exists = false
+            },
+            {
+              field  = "tags['Scm']"
+              exists = false
+            },
+            {
+              field  = "tags['DataClassification']"
+              exists = false
+            },
+            {
+              field  = "tags['BusinessCriticality']"
+              exists = false
+            },
+            # Invalid values
             {
               field = "tags['Environment']"
               notIn = ["Prod", "Stg", "Dev"]
@@ -108,6 +129,7 @@ resource "azurerm_policy_definition" "audit_mandatory_tags" {
     }
   })
 }
+
 
 
 
@@ -267,9 +289,6 @@ resource "azurerm_subscription_policy_assignment" "audit_mandatory_tags_assignme
   parameters = jsonencode({
     effect = {
       value = "Audit"
-    }
-    mandatoryTags = {
-      value = var.mandatory_tags
     }
   })
 

@@ -13,6 +13,6 @@ tags = {
   CompanyCode         = "SGS"
   Scm                 = "GitHub"
   DataClassification  = "Confidential"
-  BusinessCriticality = "High"
+  BusinessCriticality = "critical"
 }
 
