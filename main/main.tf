@@ -23,7 +23,7 @@ provider "azurerm" {
 # 3. TARGET SUBSCRIPTION PROVIDER (ALIAS FOR SCOPED RESOURCES)
 ###############################################################################
 provider "azurerm" {
-  features        {}
+  features {}
   alias           = "target_sub"
   subscription_id = var.target_subscription_id
 }
@@ -38,17 +38,24 @@ resource "azurerm_resource_group" "main" {
   tags     = var.tags
 }
 
+resource "azurerm_resource_group" "tg_test" {
+  provider = azurerm.target_sub
+  name     = "${var.resource_group_name2}-${substr(var.target_subscription_id, 0, 8)}"
+  location = var.location
+  tags     = var.tags
+}
+
 ###############################################################################
 # 5. STORAGE ACCOUNT CREATION
 ###############################################################################
 resource "azurerm_storage_account" "main" {
-  provider                  = azurerm.target_sub
-  name                      = "${var.storage_account_name}${substr(var.target_subscription_id, 0, 8)}"
-  resource_group_name       = azurerm_resource_group.main.name
-  location                  = azurerm_resource_group.main.location
-  account_tier              = "Standard"
-  account_replication_type  = "LRS"
-  min_tls_version           = "TLS1_2"
+  provider                 = azurerm.target_sub
+  name                     = "${var.storage_account_name}${substr(var.target_subscription_id, 0, 8)}"
+  resource_group_name      = azurerm_resource_group.main.name
+  location                 = azurerm_resource_group.main.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  min_tls_version          = "TLS1_2"
 
   tags = merge(var.tags, { resource = "storage-account" })
 }

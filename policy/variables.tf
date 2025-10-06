@@ -1,10 +1,11 @@
 variable "subscription_id" {
   type        = string
-  description = "The Azure subscription ID where the policy will be assigned"
+  description = "Azure subscription ID"
 }
 
 variable "tag_name" {
   type        = string
+<<<<<<< HEAD
   description = "The name of the required tag"
 }
 
@@ -23,3 +24,11 @@ variable "default_environment_value" {
     error_message = "Default environment value must be one of: prod, stg, dev"
   }
 }
+=======
+  description = "Single tag name to be used in policy"
+}
+variable "mandatory_tags" {
+  type        = list(string)
+  description = "List of mandatory tags to audit"
+}
+>>>>>>> 8469c7d26b595d0dcb76ffdf0279f75c426504dc
