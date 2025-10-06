@@ -38,7 +38,7 @@ resource "azurerm_resource_group" "main" {
   tags     = var.tags
 }
 
-resource "azurerm_resource_group" "RG test" {
+resource "azurerm_resource_group" "tg_test" {
   provider = azurerm.target_sub
   name     = "${var.resource_group_name2}-${substr(var.target_subscription_id, 0, 8)}"
   location = var.location
