@@ -168,7 +168,6 @@ resource "azurerm_policy_definition" "audit_mandatory_tags-indexed" {
         displayName = "Array of mandatory tags indexed"
         description = "Array of mandatory tags that must be present on the resource."
       }
-      defaultValue = var.mandatory_tags
     }
   })
 
@@ -269,9 +268,7 @@ resource "azurerm_subscription_policy_assignment" "audit_mandatory_tags_assignme
     effect = {
       value = "Audit"
     }
-    mandatoryTags = {
-      value = var.mandatory_tags
-    }
+
   })
 }
 
