@@ -9,6 +9,12 @@ variable "resource_group_name" {
   default     = "rg-prod-app"
 }
 
+variable "resource_group_name2" {
+  description = "Name of the resource group."
+  type        = string
+  default     = "rg-prod-app"
+}
+
 variable "location" {
   description = "Azure region for resource deployment."
   type        = string
@@ -24,7 +30,7 @@ variable "storage_account_name" {
 variable "tags" {
   description = "Tags to assign to resources."
   type        = map(string)
-  default     = {
+  default = {
     environment = "Production"
     project     = "OIDC-Demo"
   }
