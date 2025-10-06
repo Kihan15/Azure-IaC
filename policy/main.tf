@@ -92,7 +92,7 @@ resource "azurerm_policy_definition" "audit_mandatory_tags" {
               exists = false
             },
             {
-              field  = "tags['CompamyCode']"
+              field  = "tags['CompanyCode']"
               exists = false
             },
             {
