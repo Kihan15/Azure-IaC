@@ -529,36 +529,36 @@ resource "azurerm_policy_set_definition" "initiative_mandatory_tags" {
   policy_definition_reference {
     reference_id         = "BusinessOwnerRequired"
     policy_definition_id = azurerm_policy_definition.tag_businessowner_required.id
-    parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
   }
 
   policy_definition_reference {
     reference_id         = "EnvironmentRequiredAllowed"
     policy_definition_id = azurerm_policy_definition.tag_environment_required_allowed.id
-    parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
   }
 
   policy_definition_reference {
     reference_id         = "CompanyCodeRequired"
     policy_definition_id = azurerm_policy_definition.tag_companycode_required.id
-    parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
   }
   policy_definition_reference {
     reference_id         = "ScmRequired"
     policy_definition_id = azurerm_policy_definition.tag_scm_required.id
-    parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
   }
 
   policy_definition_reference {
     reference_id         = "DataClassificationRequiredAllowed"
     policy_definition_id = azurerm_policy_definition.tag_dataclassification_required_allowed.id
-    parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
   }
 
   policy_definition_reference {
     reference_id         = "BusinessCriticalityRequiredAllowed"
     policy_definition_id = azurerm_policy_definition.tag_businesscriticality_required_allowed.id
-    parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
   }
 
   policy_definition_reference {
@@ -569,12 +569,12 @@ resource "azurerm_policy_set_definition" "initiative_mandatory_tags" {
   policy_definition_reference {
     reference_id         = "ProjectRequired"
     policy_definition_id = azurerm_policy_definition.tag_project_required.id
-    parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
   }
   policy_definition_reference {
     reference_id         = "BusinessRequestRequired"
     policy_definition_id = azurerm_policy_definition.tag_businessrequest_required.id
-    parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
   }
 }
 
@@ -589,7 +589,7 @@ resource "azurerm_subscription_policy_assignment" "initiative_mandatory_tags_ass
   subscription_id      = "/subscriptions/${var.subscription_id}"
   enforce              = true
 
-  parameters = jsonencode({
-    effect = { value = "Audit" }
-  })
+  # parameters = jsonencode({
+  #   effect = { value = "Audit" }
+  # })
 }
