@@ -18,12 +18,3 @@ output "policy_definition_name" {
   description = "The name of the policy definition"
 }
 
-output "policy_assignment_id" {
-  value       = azurerm_subscription_policy_assignment.deny_missing_tag.id
-  description = "The ID of the policy assignment"
-}
-
-output "policy_assignment_name" {
-  value       = azurerm_subscription_policy_assignment.deny_missing_tag.name
-  description = "The name of the policy assignment"
-}
