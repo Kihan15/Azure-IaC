@@ -6,7 +6,7 @@ mandatory_tags = [
   "BusinessRequest",
   "BusinessOwner",
   "Environment",
-  "CompamyCode",
+  "CompanyCode",
   "Scm",
   "DataClassification",
   "BusinessCriticality"
