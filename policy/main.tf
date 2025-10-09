@@ -226,24 +226,129 @@ resource "azurerm_subscription_policy_assignment" "audit_environment_tag" {
   description          = "Audits resources with invalid environment tag values (must be prod, stg, or dev)"
   enforce              = true
 
-  metadata = jsonencode({
-    assignedBy = "Terraform"
+  policy_rule = jsonencode({
+    if = {
+      anyOf = [
+        {
+          field  = "tags['BusinessCriticality']"
+          exists = false
+        },
+        {
+          field = "tags['BusinessCriticality']"
+          notIn = local.bc_allowed_values
+        }
+      ]
+    }
+    then = {
+      effect = "[parameters('effect')]"
+    }
+  })
+}
+
+############################################################
+# Initiative (Policy Set Definition): Mandatory Tags
+############################################################
+resource "azurerm_policy_set_definition" "initiative_mandatory_tags" {
+  name         = "initiative-mandatory-tags"
+  display_name = "Mandatory Tags (Audit/Deny)"
+  description  = "Initiative that requires key governance tags and enforces allowed values where applicable."
+  policy_type  = "Custom"
+  metadata     = jsonencode({ category = "Tags" })
+
+  # Single effect parameter propagated to all included policies
+  parameters = jsonencode({
+    effect = {
+      type          = "String"
+      metadata      = { displayName = "Effect for all included policies" }
+      allowedValues = ["Audit", "Deny", "Disabled"]
+      defaultValue  = "Audit"
+    }
   })
 
-  non_compliance_message {
-    content = "The 'environment' tag must have one of the following values: prod, stg, dev. Current value is invalid or missing."
+  # References
+
+
+  policy_definition_reference {
+    reference_id         = "CostCenterRequired"
+    policy_definition_id = azurerm_policy_definition.tag_costcenter_required.id
+    parameter_values = jsonencode({
+      effect = { value = "[parameters('effect')]" }
+    })
+  }
+
+  policy_definition_reference {
+    reference_id         = "ProjectRequired"
+    policy_definition_id = azurerm_policy_definition.tag_project_required.id
+    parameter_values = jsonencode({
+      effect = { value = "[parameters('effect')]" }
+    })
+  }
+
+  policy_definition_reference {
+    reference_id         = "BusinessRequestRequired"
+    policy_definition_id = azurerm_policy_definition.tag_businessrequest_required.id
+    parameter_values = jsonencode({
+      effect = { value = "[parameters('effect')]" }
+    })
+  }
+  policy_definition_reference {
+    reference_id         = "BusinessOwnerRequired"
+    policy_definition_id = azurerm_policy_definition.tag_businessowner_required.id
+    parameter_values = jsonencode({
+      effect = { value = "[parameters('effect')]" }
+    })
+  }
+
+  policy_definition_reference {
+    reference_id         = "CompanyCodeRequired"
+    policy_definition_id = azurerm_policy_definition.tag_companycode_required.id
+    parameter_values = jsonencode({
+      effect = { value = "[parameters('effect')]" }
+    })
+  }
+
+  policy_definition_reference {
+    reference_id         = "ScmRequired"
+    policy_definition_id = azurerm_policy_definition.tag_scm_required.id
+    parameter_values = jsonencode({
+      effect = { value = "[parameters('effect')]" }
+    })
+  }
+
+  policy_definition_reference {
+    reference_id         = "EnvironmentRequiredAllowed"
+    policy_definition_id = azurerm_policy_definition.tag_environment_required_allowed.id
+    parameter_values = jsonencode({
+      effect = { value = "[parameters('effect')]" }
+    })
+  }
+
+  policy_definition_reference {
+    reference_id         = "DataClassificationRequiredAllowed"
+    policy_definition_id = azurerm_policy_definition.tag_dataclassification_required_allowed.id
+    parameter_values = jsonencode({
+      effect = { value = "[parameters('effect')]" }
+    })
+  }
+
+  policy_definition_reference {
+    reference_id         = "BusinessCriticalityRequiredAllowed"
+    policy_definition_id = azurerm_policy_definition.tag_businesscriticality_required_allowed.id
+    parameter_values = jsonencode({
+      effect = { value = "[parameters('effect')]" }
+    })
   }
 }
 
-
-
-# Policy Assignment at Subscription Level
-resource "azurerm_subscription_policy_assignment" "deny_missing_tag" {
-  name                 = "deny-missing-${var.tag_name}-assignment"
+############################################################
+# Assignment at Subscription scope
+############################################################
+resource "azurerm_subscription_policy_assignment" "initiative_mandatory_tags_assignment" {
+  name                 = "assignment-initiative-mandatory-tags"
+  display_name         = "Assignment: Mandatory Tags Initiative"
+  description          = "Audits resources to ensure mandatory tags exist and values are compliant."
+  policy_definition_id = azurerm_policy_set_definition.initiative_mandatory_tags.id
   subscription_id      = "/subscriptions/${var.subscription_id}"
-  policy_definition_id = azurerm_policy_definition.deny_missing_tag.id
-  display_name         = "Deny resources without ${var.tag_name} tag"
-  description          = "Enforces ${var.tag_name} tag on all resources in the subscription"
   enforce              = true
 
   non_compliance_message {
