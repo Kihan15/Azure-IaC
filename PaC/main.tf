@@ -7,6 +7,10 @@ terraform {
   }
 }
 
+provider "azurerm" {
+  features {}
+}
+
 
 ############################################################
 
@@ -50,6 +54,6 @@ locals {
 }
 
 module "policy_initiatives" {
-  source = "./modules/policy_initiative"
+  source             = "./modules/policy_initiative"
   policy_initiatives = local.policy_initiatives
 }
