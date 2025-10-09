@@ -1,0 +1,32 @@
+{
+  "displayName": "Require tag: BusinessOwner",
+  "description": "Audits subscriptions and resource groups missing the 'BusinessOwner' tag.",
+  "policyType": "BuiltIn",
+  "mode": "Indexed",
+  "metadata": {
+    "category": "Tags"
+  },
+  "parameters": {
+    "effect": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Effect"
+      },
+      "allowedValues": [
+        "Audit",
+        "Deny",
+        "Disabled"
+      ],
+      "defaultValue": "Audit"
+    }
+  },
+  "policyRule": {
+    "if": {
+      "field": "tags['BusinessOwner']",
+      "exists": false
+    },
+    "then": {
+      "effect": "[parameters('effect')]"
+    }
+  }
+}
