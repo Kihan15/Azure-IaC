@@ -1,9 +1,3 @@
-provider "azurerm" {
-  features {}
-  subscription_id = "d2c5b5b1-d8df-4dbd-ac14-d347e7ab31b0"
-}
-
-
 # ------------------------------------------------------------
 # 1. Creation of Individual Policy Definitions
 # ------------------------------------------------------------
@@ -112,4 +106,23 @@ resource "azurerm_policy_set_definition" "initiative_mandatory_tags" {
     policy_definition_id = module.custom_policy["tag-businessrequest-required"].policy_definition_id
     #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
   }
+}
+
+
+
+
+############################################################
+# Assignment of Initiative tags to Subscription & resource groups)
+############################################################
+resource "azurerm_subscription_policy_assignment" "initiative_mandatory_tags_assignment" {
+  name                 = "assignment-initiative-mandatory-tags-subs-rgs"
+  display_name         = "Assignment: Mandatory Tags for Subscriptions & RGs"
+  description          = "Audits subscriptions and resource groups to ensure mandatory tags exist."
+  policy_definition_id = azurerm_policy_set_definition.initiative_mandatory_tags.id
+  subscription_id      = "/subscriptions/${var.subscription_id}"
+  enforce              = true
+
+  # parameters = jsonencode({
+  #   effect = { value = "Audit" }
+  # })
 }
