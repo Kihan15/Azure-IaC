@@ -1,0 +1,1 @@
+# Optional: Define variables if needed
