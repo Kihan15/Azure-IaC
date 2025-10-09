@@ -1,4 +1,9 @@
 {
+  "name": "Deny-RDP-From-Internet",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2020-09-01",
+  "scope": null,
+  "properties":{
     "displayName": "Virtual machines and virtual machine scale sets should have encryption at host enabled",
     "policyType": "BuiltIn",
     "mode": "Indexed",
@@ -55,4 +60,5 @@
             "effect": "[parameters('effect')]"
         }
     }
+}
 }
