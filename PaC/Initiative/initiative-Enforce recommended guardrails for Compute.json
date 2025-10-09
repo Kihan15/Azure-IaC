@@ -1,0 +1,60 @@
+{
+    "policyType": "Custom",
+    "displayName": "Enforce recommended guardrails for Compute",
+    "description": "This policy initiative is a group of policies that ensures Compute is compliant per regulated Landing Zones.",
+    "metadata": {
+        "version": "1.1.0",
+        "category": "Compute",
+        "source": "https://github.com/Azure/Enterprise-Scale/",
+        "alzCloudEnvironments": [
+            "AzureCloud",
+            "AzureChinaCloud",
+            "AzureUSGovernment"
+        ]
+    },
+    "parameters": {
+        "diskDoubleEncryption": {
+            "type": "string",
+            "defaultValue": "Deny",
+            "allowedValues": [
+                "Audit",
+                "Deny",
+                "Disabled"
+            ]
+        },
+        "vmAndVmssEncryptionHost": {
+            "type": "string",
+            "defaultValue": "Deny",
+            "allowedValues": [
+                "Audit",
+                "Deny",
+                "Disabled"
+            ]
+        }
+    },
+    "policyDefinitions": [
+        {
+            "policyDefinitionId": "azurerm_policy_definition.from_files[\"policy-vm-encryption.json\"].id",
+            "policyDefinitionReferenceId": "Deny-VmAndVmss-Encryption-Host",
+            "definitionVersion": "1.*.*",
+            "groupNames": [],
+            "parameters": {
+                "effect": {
+                    "value": "[parameters('vmAndVmssEncryptionHost')]"
+                }
+            }
+        },
+        {
+            "policyDefinitionId": "azurerm_policy_definition.from_files[\"policy-managedisks.json\"].id",
+            "policyDefinitionReferenceId": "Deny-Disk-Double-Encryption",
+            "definitionVersion": "1.*.*",
+            "groupNames": [],
+            "parameters": {
+                "effect": {
+                    "value": "[parameters('diskDoubleEncryption')]"
+                }
+            }
+        }
+    ],
+    "policyDefinitionGroups": null
+}
