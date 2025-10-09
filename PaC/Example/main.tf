@@ -34,14 +34,11 @@ module "custom_policy" {
 # ------------------------------------------------------------
 
 resource "azurerm_policy_set_definition" "initiative_mandatory_tags" {
-  # --- ADDED/COMPLETED ARGUMENTS HERE ---
   name         = "initiative-mandatory-tags-subs-rgs"
   display_name = "Mandatory Tags (Subscriptions & Resource Groups)"
   policy_type  = "Custom"
-  # --- END OF ADDED/COMPLETED ARGUMENTS ---
-
-  description = "Requires presence of governance tags on subscriptions and resource groups."
-  metadata    = jsonencode({ category = "Tags" })
+  description  = "Requires presence of governance tags on subscriptions and resource groups."
+  metadata     = jsonencode({ category = "Tags" })
 
   parameters = jsonencode({
     effect = {
