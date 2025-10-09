@@ -3,10 +3,15 @@ provider "azurerm" {
   subscription_id = "d2c5b5b1-d8df-4dbd-ac14-d347e7ab31b0"
 }
 
+
+# ------------------------------------------------------------
+# 1. Creation of Individual Policy Definitions
+# ------------------------------------------------------------
+
 # Find and read the file data into local Variables.
 locals {
-  policy_files = fileset("./data", "*.json")
-  raw_data     = [for f in local.policy_files : jsondecode(file("./data/${f}"))]
+  policy_files = fileset("./policies/tag", "*.json")
+  raw_data     = [for f in local.policy_files : jsondecode(file("./policies/tag/${f}"))]
 }
 
 /*
@@ -17,7 +22,7 @@ locals {
 
 module "custom_policy" {
   for_each = { for f in local.raw_data : f.name => f }
-  source   = "./modules/"
+  source   = "./modules/policy_definition"
 
   policy_name  = each.key
   policy_mode  = each.value.properties.mode
@@ -30,3 +35,81 @@ module "custom_policy" {
 
 
 
+# ------------------------------------------------------------
+# 2. Creation of initiative from Definitions
+# ------------------------------------------------------------
+
+resource "azurerm_policy_set_definition" "initiative_mandatory_tags" {
+  # --- ADDED/COMPLETED ARGUMENTS HERE ---
+  name         = "initiative-mandatory-tags-subs-rgs"
+  display_name = "Mandatory Tags (Subscriptions & Resource Groups)"
+  policy_type  = "Custom"
+  # --- END OF ADDED/COMPLETED ARGUMENTS ---
+
+  description = "Requires presence of governance tags on subscriptions and resource groups."
+  metadata    = jsonencode({ category = "Tags" })
+
+  parameters = jsonencode({
+    effect = {
+      type          = "String"
+      metadata      = { displayName = "Effect for all included policies" }
+      allowedValues = ["Audit", "Deny", "Disabled"]
+      defaultValue  = "Audit"
+    }
+  })
+
+  ######################################################
+  # References (all inherit initiative-level effect)   #
+  ######################################################
+
+  policy_definition_reference {
+    reference_id         = "BusinessOwnerRequired"
+    policy_definition_id = module.custom_policy["tag-businessowner-required"].policy_definition_id
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+  }
+
+  policy_definition_reference {
+    reference_id         = "EnvironmentRequiredAllowed"
+    policy_definition_id = module.custom_policy["tag-environment-required-and-allowed-subs-rgs"].policy_definition_id
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+  }
+
+  policy_definition_reference {
+    reference_id         = "CompanyCodeRequired"
+    policy_definition_id = module.custom_policy["tag-companycode-required"].policy_definition_id
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+  }
+  policy_definition_reference {
+    reference_id         = "ScmRequired"
+    policy_definition_id = module.custom_policy["tag-scm-required"].policy_definition_id
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+  }
+
+  policy_definition_reference {
+    reference_id         = "DataClassificationRequiredAllowed"
+    policy_definition_id = module.custom_policy["tag-dataclassification-required-and-allowed-subs-rgs"].policy_definition_id
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+  }
+
+  policy_definition_reference {
+    reference_id         = "BusinessCriticalityRequiredAllowed"
+    policy_definition_id = module.custom_policy["tag-businesscriticality-required-and-allowed-subs-rgs"].policy_definition_id
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+  }
+
+  policy_definition_reference {
+    reference_id         = "CostCenterRequired"
+    policy_definition_id = module.custom_policy["tag-costcenter-required"].policy_definition_id
+    parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+  }
+  policy_definition_reference {
+    reference_id         = "ProjectRequired"
+    policy_definition_id = module.custom_policy["tag-project-required"].policy_definition_id
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+  }
+  policy_definition_reference {
+    reference_id         = "BusinessRequestRequired"
+    policy_definition_id = module.custom_policy["tag-businessrequest-required"].policy_definition_id
+    #parameter_values     = jsonencode({ effect = { value = "[parameters('effect')]" } })
+  }
+}
