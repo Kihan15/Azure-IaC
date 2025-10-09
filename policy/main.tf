@@ -226,23 +226,9 @@ resource "azurerm_subscription_policy_assignment" "audit_environment_tag" {
   description          = "Audits resources with invalid environment tag values (must be prod, stg, or dev)"
   enforce              = true
 
-  policy_rule = jsonencode({
-    if = {
-      anyOf = [
-        {
-          field  = "tags['BusinessCriticality']"
-          exists = false
-        },
-        {
-          field = "tags['BusinessCriticality']"
-          notIn = local.bc_allowed_values
-        }
-      ]
-    }
-    then = {
-      effect = "[parameters('effect')]"
-    }
-  })
+  non_compliance_message {
+    content = "Resource must have an 'environment' tag with a value of 'prod', 'stg', or 'dev'."
+  }
 }
 
 ############################################################
