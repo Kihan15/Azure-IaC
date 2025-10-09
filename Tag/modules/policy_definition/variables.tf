@@ -19,8 +19,6 @@ variable "display_name" {
   description = "description"
 }
 
-
-
 variable "policy_name" {
   type        = string
   description = "description"
